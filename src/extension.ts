@@ -59,8 +59,11 @@ function transformInsideBlock(
   const range = new vscode.Range(startPos, endPos);
 
   if (action === "delete") {
-    editor.edit(editBuilder => {
-      editBuilder.delete(range);
+    const textToCopy = document.getText(range);
+    vscode.env.clipboard.writeText(textToCopy).then(() => {
+      editor.edit(editBuilder => {
+        editBuilder.delete(range);
+      });
     });
   } else if (action === "select") {
     editor.selection = new vscode.Selection(startPos, endPos);
@@ -98,8 +101,11 @@ function transformInsideQuotationMarks(
   const range = new vscode.Range(startPos, endPos);
 
   if (action === "delete") {
-    editor.edit(editBuilder => {
-      editBuilder.delete(range);
+    const textToCopy = document.getText(range);
+    vscode.env.clipboard.writeText(textToCopy).then(() => {
+      editor.edit(editBuilder => {
+        editBuilder.delete(range);
+      });
     });
   } else if (action === "select") {
     editor.selection = new vscode.Selection(startPos, endPos);
