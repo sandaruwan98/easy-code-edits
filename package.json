@@ -12,19 +12,118 @@
   "activationEvents": [],
   "main": "./out/extension.js",
   "contributes": {
-        "commands": [
-            {
-                "command": "easy-code-edits.deleteInsideParentheses",
-                "title": "Delete Inside Parentheses"
-            }
-        ],
-        "keybindings": [
-            {
-                "command": "easy-code-edits.deleteInsideParentheses",
-                "key": "ctrl+shift+9",
-                "when": "editorTextFocus"
-            }
-        ]
+    "commands": [
+      {
+        "command": "easy-code-edits.deleteInsideParentheses",
+        "title": "Delete Inside Parentheses"
+      },
+      {
+        "command": "easy-code-edits.deleteInsideBraces",
+        "title": "Delete Inside Braces"
+      },
+      {
+        "command": "easy-code-edits.deleteInsideSquareBrackets",
+        "title": "Delete Inside Square Brackets"
+      },
+      {
+        "command": "easy-code-edits.deleteInsideDoubleQuotes",
+        "title": "Delete Inside Double Quotes"
+      },
+      {
+        "command": "easy-code-edits.deleteInsideSingleQuotes",
+        "title": "Delete Inside Single Quotes"
+      },
+      {
+        "command": "easy-code-edits.deleteInsideBackticks",
+        "title": "Delete Inside Backticks"
+      },
+      {
+        "command": "easy-code-edits.selectInsideParentheses",
+        "title": "Select Inside Parentheses"
+      },
+      {
+        "command": "easy-code-edits.selectInsideBraces",
+        "title": "Select Inside Braces"
+      },
+      {
+        "command": "easy-code-edits.selectInsideSquareBrackets",
+        "title": "Select Inside Square Brackets"
+      },
+      {
+        "command": "easy-code-edits.selectInsideDoubleQuotes",
+        "title": "Select Inside Double Quotes"
+      },
+      {
+        "command": "easy-code-edits.selectInsideSingleQuotes",
+        "title": "Select Inside Single Quotes"
+      },
+      {
+        "command": "easy-code-edits.selectInsideBackticks",
+        "title": "Select Inside Backticks"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "easy-code-edits.deleeInsideParentheses",
+        "key": "ctrl+shift+9",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "easy-code-edits.deleteInsideBraces",
+        "key": "ctrl+shift+[",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "easy-code-edits.deleteInsideSquareBrackets",
+        "key": "ctrl+[",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "easy-code-edits.deleteInsideDoubleQuotes",
+        "key": "ctrl+shift+'",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "easy-code-edits.deleteInsideSingleQuotes",
+        "key": "ctrl+'",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "easy-code-edits.deleteInsideBackticks",
+        "key": "ctrl+`",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "easy-code-edits.selectInsideParentheses",
+        "key": "alt+shift+9",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "easy-code-edits.selectInsideBraces",
+        "key": "alt+shift+[",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "easy-code-edits.selectInsideSquareBrackets",
+        "key": "alt+[",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "easy-code-edits.selectInsideDoubleQuotes",
+        "key": "alt+shift+'",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "easy-code-edits.selectInsideSingleQuotes",
+        "key": "alt+'",
+        "when": "editorTextFocus"
+      },
+      {
+        "command": "easy-code-edits.selectInsideBackticks",
+        "key": "alt+`",
+        "when": "editorTextFocus"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "pnpm run compile",

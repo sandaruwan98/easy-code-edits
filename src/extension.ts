@@ -1,79 +1,297 @@
-// The module 'vscode' contains the VS Code extensibility API
-// Import the module and reference it with the alias vscode in your code below
-import * as vscode from 'vscode';
+import * as vscode from "vscode";
 
-// Utility function that deletes text inside a block defined by an open and close character,
-// using balanced matching logic.
-function deleteInsideBlock(editor: vscode.TextEditor, document: vscode.TextDocument, pos: vscode.Position, open: string, close: string) {
-    const text = document.getText();
-    const offset = document.offsetAt(pos);
-    let candidate: { open: number; close: number } | undefined = undefined;
-    const stack: number[] = [];
+function transformInsideBlock(
+  editor: vscode.TextEditor,
+  document: vscode.TextDocument,
+  pos: vscode.Position,
+  open: string,
+  close: string,
+  action: "delete" | "select" = "delete"
+) {
+  const text = document.getText();
+  const offset = document.offsetAt(pos);
 
-    // Scan the text to match open and closing characters.
-    for (let i = 0; i < text.length; i++) {
-        const char = text[i];
-        if (char === open) {
-            stack.push(i);
-        } else if (char === close) {
-            if (stack.length > 0) {
-                const openIndex = stack.pop()!;
-                if (openIndex < offset && i > offset) {
-                    // Choose the innermost block by checking for a later open character.
-                    if (!candidate || openIndex > candidate.open) {
-                        candidate = { open: openIndex, close: i };
-                    }
-                }
-            }
-        }
+  const beforeText = text.substring(0, offset);
+  const stackBefore = [];
+  let openIndex = -1;
+  for (let i = beforeText.length - 1; i >= 0; i--) {
+    if (beforeText[i] === close) {
+      stackBefore.push(beforeText[i]);
+    } else if (beforeText[i] === open) {
+      if (stackBefore.length === 0) {
+        openIndex = i;
+        break;
+      } else {
+        stackBefore.pop();
+      }
     }
+  }
 
-    if (!candidate) {
-        vscode.window.showErrorMessage(`No matching block found for '${open}' and '${close}'.`);
-        return;
+  if (openIndex === -1) {
+    vscode.window.showErrorMessage(`No preceding '${open}' found.`);
+    return;
+  }
+
+  // Find the closest closing character after the cursor
+  const afterText = text.substring(offset);
+  const stackAfter = [];
+  let closeIndexRelative = -1;
+  for (let i = 0; i < afterText.length; i++) {
+    if (afterText[i] === open) {
+      stackAfter.push(afterText[i]);
+    } else if (afterText[i] === close) {
+      if (stackAfter.length === 0) {
+        closeIndexRelative = i;
+        break;
+      } else {
+        stackAfter.pop();
+      }
     }
+  }
+  if (closeIndexRelative === -1) {
+    vscode.window.showErrorMessage(`No following '${close}' found.`);
+    return;
+  }
 
-    // Exclude the delimiters.
-    const startPos = document.positionAt(candidate.open + 1);
-    const endPos = document.positionAt(candidate.close);
-    const range = new vscode.Range(startPos, endPos);
+  // Create positions that exclude the delimiters
+  const startPos = document.positionAt(openIndex + 1);
+  const endPos = document.positionAt(offset + closeIndexRelative);
+  const range = new vscode.Range(startPos, endPos);
 
+  if (action === "delete") {
     editor.edit(editBuilder => {
-        editBuilder.delete(range);
+      editBuilder.delete(range);
     });
+  } else if (action === "select") {
+    editor.selection = new vscode.Selection(startPos, endPos);
+    editor.revealRange(range);
+  }
 }
 
-// This method is called when your extension is activated
-// Your extension is activated the very first time the command is executed
+function transformInsideQuotationMarks(
+  editor: vscode.TextEditor,
+  document: vscode.TextDocument,
+  pos: vscode.Position,
+  symbol: string,
+  action: "delete" | "select" = "delete"
+) {
+  const text = document.getText();
+  const offset = document.offsetAt(pos);
+
+  // Find the closest opening character before the cursor
+  const beforeText = text.substring(0, offset);
+  const openIndex = beforeText.lastIndexOf(symbol);
+  if (openIndex === -1) {
+    vscode.window.showErrorMessage(`No preceding '${symbol}' found.`);
+    return;
+  }
+  // Find the closest closing character after the cursor
+  const afterText = text.substring(offset);
+  const closeIndexRelative = afterText.indexOf(symbol);
+  if (closeIndexRelative === -1) {
+    vscode.window.showErrorMessage(`No following '${symbol}' found.`);
+    return;
+  }
+
+  const startPos = document.positionAt(openIndex + 1);
+  const endPos = document.positionAt(offset + closeIndexRelative);
+  const range = new vscode.Range(startPos, endPos);
+
+  if (action === "delete") {
+    editor.edit(editBuilder => {
+      editBuilder.delete(range);
+    });
+  } else if (action === "select") {
+    editor.selection = new vscode.Selection(startPos, endPos);
+    editor.revealRange(range);
+  }
+}
+
 export function activate(context: vscode.ExtensionContext) {
+  console.log(
+    'Congratulations, your extension "easy-code-edits" is now active!'
+  );
 
-	// Use the console to output diagnostic information (console.log) and errors (console.error)
-	// This line of code will only be executed once when your extension is activated
-	console.log('Congratulations, your extension "easy-code-edits" is now active!');
+  // Command for deleting inside parentheses - di( style
+  const disposableDeleteInParentheses = vscode.commands.registerCommand(
+    "easy-code-edits.deleteInsideParentheses",
+    () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+      const document = editor.document;
+      const pos = editor.selection.active;
+      transformInsideBlock(editor, document, pos, "(", ")", "delete");
+    }
+  );
 
-	// The command has been defined in the package.json file
-	// Now provide the implementation of the command with registerCommand
-	// The commandId parameter must match the command field in package.json
-	const disposableHello = vscode.commands.registerCommand('easy-code-edits.helloWorld', () => {
-		// The code you place here will be executed every time your command is executed
-		// Display a message box to the user
-		vscode.window.showInformationMessage('Hello World from Easy Code Edits!');
-	});
-	context.subscriptions.push(disposableHello);
+  // Command for selecting inside parentheses - vi( style
+  const disposableSelectInParentheses = vscode.commands.registerCommand(
+    "easy-code-edits.selectInsideParentheses",
+    () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+      const document = editor.document;
+      const pos = editor.selection.active;
+      transformInsideBlock(editor, document, pos, "(", ")", "select");
+    }
+  );
 
-	// Command for deleting inside parentheses (di() style)
-	const disposableDeleteInParentheses = vscode.commands.registerCommand('easy-code-edits.deleteInsideParentheses', () => {
-		const editor = vscode.window.activeTextEditor;
-		if (!editor) {
-			return;
-		}
-		const document = editor.document;
-		const pos = editor.selection.active;
-		
-		deleteInsideBlock(editor, document, pos, '(', ')');
-	});
-	context.subscriptions.push(disposableDeleteInParentheses);
+  // Command for deleting inside braces - di{ style
+  const disposableDeleteInBraces = vscode.commands.registerCommand(
+    "easy-code-edits.deleteInsideBraces",
+    () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+      const document = editor.document;
+      const pos = editor.selection.active;
+      transformInsideBlock(editor, document, pos, "{", "}", "delete");
+    }
+  );
+
+  // Command for selecting inside braces - vi{ style
+  const disposableSelectInBraces = vscode.commands.registerCommand(
+    "easy-code-edits.selectInsideBraces",
+    () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+      const document = editor.document;
+      const pos = editor.selection.active;
+      transformInsideBlock(editor, document, pos, "{", "}", "select");
+    }
+  );
+
+  // Command for deleting inside square brackets - di[ style
+  const disposableDeleteInSquareBrackets = vscode.commands.registerCommand(
+    "easy-code-edits.deleteInsideSquareBrackets",
+    () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+      const document = editor.document;
+      const pos = editor.selection.active;
+      transformInsideBlock(editor, document, pos, "[", "]", "delete");
+    }
+  );
+
+  // Command for selecting inside square brackets - vi[ style
+  const disposableSelectInSquareBrackets = vscode.commands.registerCommand(
+    "easy-code-edits.selectInsideSquareBrackets",
+    () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+      const document = editor.document;
+      const pos = editor.selection.active;
+      transformInsideBlock(editor, document, pos, "[", "]", "select");
+    }
+  );
+
+  // Command for deleting inside double quotes - di" style
+  const disposableDeleteInDoubleQuotes = vscode.commands.registerCommand(
+    "easy-code-edits.deleteInsideDoubleQuotes",
+    () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+      const document = editor.document;
+      const pos = editor.selection.active;
+      transformInsideQuotationMarks(editor, document, pos, '"', "delete");
+    }
+  );
+
+  // Command for selecting inside double quotes - vi" style
+  const disposableSelectInDoubleQuotes = vscode.commands.registerCommand(
+    "easy-code-edits.selectInsideDoubleQuotes",
+    () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+      const document = editor.document;
+      const pos = editor.selection.active;
+      transformInsideQuotationMarks(editor, document, pos, '"', "select");
+    }
+  );
+
+  // Command for deleting inside single quotes - di' style
+  const disposableDeleteInSingleQuotes = vscode.commands.registerCommand(
+    "easy-code-edits.deleteInsideSingleQuotes",
+    () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+      const document = editor.document;
+      const pos = editor.selection.active;
+      transformInsideQuotationMarks(editor, document, pos, "'", "delete");
+    }
+  );
+
+  // Command for selecting inside single quotes - vi' style
+  const disposableSelectInSingleQuotes = vscode.commands.registerCommand(
+    "easy-code-edits.selectInsideSingleQuotes",
+    () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+      const document = editor.document;
+      const pos = editor.selection.active;
+      transformInsideQuotationMarks(editor, document, pos, "'", "select");
+    }
+  );
+
+  // Command for deleting inside backticks - di` style
+  const disposableDeleteInBackticks = vscode.commands.registerCommand(
+    "easy-code-edits.deleteInsideBackticks",
+    () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+      const document = editor.document;
+      const pos = editor.selection.active;
+      transformInsideQuotationMarks(editor, document, pos, "`", "delete");
+    }
+  );
+
+  // Command for selecting inside backticks - vi` style
+  const disposableSelectInBackticks = vscode.commands.registerCommand(
+    "easy-code-edits.selectInsideBackticks",
+    () => {
+      const editor = vscode.window.activeTextEditor;
+      if (!editor) {
+        return;
+      }
+      const document = editor.document;
+      const pos = editor.selection.active;
+      transformInsideQuotationMarks(editor, document, pos, "`", "select");
+    }
+  );
+
+  context.subscriptions.push(disposableDeleteInParentheses);
+  context.subscriptions.push(disposableSelectInParentheses);
+  context.subscriptions.push(disposableDeleteInBraces);
+  context.subscriptions.push(disposableSelectInBraces);
+  context.subscriptions.push(disposableDeleteInSquareBrackets);
+  context.subscriptions.push(disposableSelectInSquareBrackets);
+  context.subscriptions.push(disposableDeleteInDoubleQuotes);
+  context.subscriptions.push(disposableSelectInDoubleQuotes);
+  context.subscriptions.push(disposableDeleteInSingleQuotes);
+  context.subscriptions.push(disposableSelectInSingleQuotes);
+  context.subscriptions.push(disposableDeleteInBackticks);
+  context.subscriptions.push(disposableSelectInBackticks);
 }
 
-// This method is called when your extension is deactivated
 export function deactivate() {}
