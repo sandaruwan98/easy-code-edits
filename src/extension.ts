@@ -1,7 +1,7 @@
 import * as vscode from "vscode";
-import transformInsideBlock from "./transtormInsideBlock";
-import transformInsideQuotationMarks from "./transformInsideQuotationMarks";
-import deleteMethodArgument from "./deleteMethodArgument";
+import transformInsideBlock from "./utils/transtormInsideBlock";
+import transformInsideQuotationMarks from "./utils/transformInsideQuotationMarks";
+import deleteMethodArgument from "./utils/deleteMethodArgument";
 
 export function activate(context: vscode.ExtensionContext) {
   console.log(
