@@ -1,71 +1,92 @@
-# easy-code-edits README
+# Easy Code Edits
 
-This is the README for your extension "easy-code-edits". After writing up a brief description, we recommend including the following sections.
+Easy Code Edits is a Visual Studio Code extension that brings Vim‑like text object motions to VS Code. With simple keybindings, you can delete or select text inside various delimiters (parentheses, braces, brackets, quotes, and backticks) without needing to learn Vim.
 
 ## Features
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+- **Vim‑Style Motions:**  
+  Executes commands like `di(` (delete inside parentheses), `di{`, `di"`, etc., making code editing fast and efficient for non‑Vim users as well.
 
-For example if there is an image subfolder under your extension project workspace:
+- **Flexible Editing:**  
+  Choose between deleting content or simply selecting it. For example, you can press `ctrl+'` to delete inside single quotes or `alt+'` to select inside parentheses single quotes.
 
-\!\[feature X\]\(images/feature-x.png\)
+- **Method Argument Deletion:**  
+  Delete a single method argument within a parenthesized argument list with the command `easy-code-edits.deleteMethodArgument`. The extension intelligently removes the correct argument along with any surrounding commas.
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+- **Clipboard Integration:**  
+  When deleting text, the removed content is automatically copied to the system clipboard, allowing easy retrieval if needed.
+
+
 
 ## Requirements
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- Visual Studio Code version 1.75.1 or later.
+- No additional dependencies are required.
 
-## Extension Settings
+## Commands & Keybindings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+The following commands are available:
 
-For example:
+- **Delete Inside Parentheses:**  
+  Command: `easy-code-edits.deleteInsideParentheses`  
+  Keybinding: `ctrl+shift+9` --> i.e. equivalent to `ctrl+(`
 
-This extension contributes the following settings:
+- **Delete Inside Braces:**  
+  Command: `easy-code-edits.deleteInsideBraces`  
+  Keybinding: `ctrl+shift+[` --> i.e. equivalent to `ctrl+{`
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+- **Delete Inside Square Brackets:**  
+  Command: `easy-code-edits.deleteInsideSquareBrackets`  
+  Keybinding: `ctrl+[`
+
+- **Delete Inside Double Quotes:**  
+  Command: `easy-code-edits.deleteInsideDoubleQuotes`  
+  Keybinding: `ctrl+shift+'` --> i.e. equivalent to `ctrl+"`
+
+- **Delete Inside Single Quotes:**  
+  Command: `easy-code-edits.deleteInsideSingleQuotes`  
+  Keybinding: `ctrl+'`
+
+- **Delete Inside Backticks:**  
+  Command: `easy-code-edits.deleteInsideBackticks`  
+  Keybinding: `ctrl+\``
+
+- **Select Inside Parentheses:**  
+  Command: `easy-code-edits.selectInsideParentheses`  
+  Keybinding: `alt+shift+9` --> i.e. equivalent to `alt+(`
+
+- **Select Inside Braces:**  
+  Command: `easy-code-edits.selectInsideBraces`  
+  Keybinding: `alt+shift+[` --> i.e. equivalent to `alt+{`
+
+- **Select Inside Square Brackets:**  
+  Command: `easy-code-edits.selectInsideSquareBrackets`  
+  Keybinding: `alt+[`
+
+- **Select Inside Double Quotes:**  
+  Command: `easy-code-edits.selectInsideDoubleQuotes`  
+  Keybinding: `alt+shift+'` --> i.e. equivalent to `alt+"`
+
+- **Select Inside Single Quotes:**  
+  Command: `easy-code-edits.selectInsideSingleQuotes`  
+  Keybinding: `alt+'`
+
+- **Select Inside Backticks:**  
+  Command: `easy-code-edits.selectInsideBackticks`  
+  Keybinding: alt+`
+
+- **Delete Method Argument:**  
+  Command: `easy-code-edits.deleteMethodArgument`  
+  Keybinding: `ctrl+shift+m`
+
+You can customize these keybindings via VS Code’s Keyboard Shortcuts (`File → Preferences → Keyboard Shortcuts`).
 
 ## Known Issues
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+- Edge-case handling for deeply nested or unbalanced delimiters may need improvement.
+- Custom delimiters are not currently supported.
 
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
 
 ---
 
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+**Enjoy Easy Code Edits and happy coding!**
