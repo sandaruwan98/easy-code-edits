@@ -4,7 +4,7 @@
   "description": "",
   "version": "0.0.1",
   "engines": {
-    "vscode": "^1.98.0"
+    "vscode": "^1.75.1"
   },
   "categories": [
     "Other"
@@ -60,11 +60,16 @@
       {
         "command": "easy-code-edits.selectInsideBackticks",
         "title": "Select Inside Backticks"
+      },
+      {
+        "command": "easy-code-edits.deleteMethodArgument",
+        "title": "Delete Method Argument"
       }
+
     ],
     "keybindings": [
       {
-        "command": "easy-code-edits.deleeInsideParentheses",
+        "command": "easy-code-edits.deleteInsideParentheses",
         "key": "ctrl+shift+9",
         "when": "editorTextFocus"
       },
@@ -122,7 +127,13 @@
         "command": "easy-code-edits.selectInsideBackticks",
         "key": "alt+`",
         "when": "editorTextFocus"
+      },
+      {
+        "command": "easy-code-edits.deleteMethodArgument",
+        "key": "ctrl+shift+m",
+        "when": "editorTextFocus"
       }
+
     ]
   },
   "scripts": {
