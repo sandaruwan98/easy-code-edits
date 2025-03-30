@@ -1,8 +1,10 @@
 {
   "name": "easy-code-edits",
   "displayName": "Easy Code Edits",
-  "description": "",
-  "version": "0.0.1",
+  "description": "Quickly delete or select code inside delimiters and method arguments using keybindings with clipboard integration.",
+  "version": "1.0.0",
+  "icon": "images/icon.png",
+  "publisher": "LakshanJayasinghe",
   "engines": {
     "vscode": "^1.75.1"
   },

@@ -49,7 +49,7 @@ The following commands are available:
 
 - **Delete Inside Backticks:**  
   Command: `easy-code-edits.deleteInsideBackticks`  
-  Keybinding: `ctrl+\``
+  Keybinding: `` ctrl+` ``
 
 - **Select Inside Parentheses:**  
   Command: `easy-code-edits.selectInsideParentheses`  
@@ -73,7 +73,7 @@ The following commands are available:
 
 - **Select Inside Backticks:**  
   Command: `easy-code-edits.selectInsideBackticks`  
-  Keybinding: alt+`
+  Keybinding: `` alt+` ``
 
 - **Delete Method Argument:**  
   Command: `easy-code-edits.deleteMethodArgument`  
