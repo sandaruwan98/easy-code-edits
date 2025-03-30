@@ -2,7 +2,7 @@
   "name": "easy-code-edits",
   "displayName": "Easy Code Edits",
   "description": "Quickly delete or select code inside delimiters and method arguments using keybindings with clipboard integration.",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "icon": "images/icon.png",
   "publisher": "LakshanJayasinghe",
   "repository": "https://github.com/sandaruwan98/easy-code-edits",
