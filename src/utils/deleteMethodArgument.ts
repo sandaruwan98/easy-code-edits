@@ -8,7 +8,7 @@ export default function deleteMethodArgument(
   const text = document.getText();
   const cursorOffset = document.offsetAt(pos);
 
-  // 1. Find the opening parenthesis before the cursor.
+  // Find the opening parenthesis before the cursor.
   let openParen = -1;
   let stack: string[] = [];
   for (let i = cursorOffset - 1; i >= 0; i--) {
@@ -29,7 +29,7 @@ export default function deleteMethodArgument(
     return;
   }
 
-  // 2. Find the closing parenthesis after the cursor.
+  // Find the closing parenthesis after the cursor.
   stack = [];
   let closeParen = -1;
   for (let i = cursorOffset; i < text.length; i++) {
@@ -50,11 +50,10 @@ export default function deleteMethodArgument(
     return;
   }
 
-  // 3. Extract the arguments text (without the surrounding parentheses).
   const argsContent = text.substring(openParen + 1, closeParen);
   const insideOffset = cursorOffset - (openParen + 1);
 
-  // 4. Find boundaries of the current argument.
+  // Find boundaries of the current argument.
   let startIndex = 0;
   let endIndex = argsContent.length;
   const commaBefore = argsContent.lastIndexOf(",", insideOffset - 1);
@@ -74,7 +73,7 @@ export default function deleteMethodArgument(
     endIndex--;
   }
 
-  // 5. Decide deletion range. Remove redundant comma if needed.
+  // Decide deletion range. Remove redundant comma if needed.
   let deleteStartOffset: number;
   let deleteEndOffset: number;
   if (commaBefore !== -1 && commaAfter === -1) {
@@ -99,7 +98,6 @@ export default function deleteMethodArgument(
   const argEndPos = document.positionAt(deleteEndOffset);
   const range = new vscode.Range(argStartPos, argEndPos);
 
-  // 6. Copy the argument text to the clipboard before deleting.
   const textToCopy = document.getText(range);
   vscode.env.clipboard.writeText(textToCopy).then(() => {
     editor.edit(editBuilder => {

@@ -11,6 +11,7 @@ export default function transformInsideBlock(
   const text = document.getText();
   const offset = document.offsetAt(pos);
 
+  // Find the closest matching opening character before the cursor
   const beforeText = text.substring(0, offset);
   const stackBefore = [];
   let openIndex = -1;
@@ -32,7 +33,7 @@ export default function transformInsideBlock(
     return;
   }
 
-  // Find the closest closing character after the cursor
+  // Find the closest matching closing character after the cursor
   const afterText = text.substring(offset);
   const stackAfter = [];
   let closeIndexRelative = -1;
@@ -53,7 +54,6 @@ export default function transformInsideBlock(
     return;
   }
 
-  // Create positions that exclude the delimiters
   const startPos = document.positionAt(openIndex + 1);
   const endPos = document.positionAt(offset + closeIndexRelative);
   const range = new vscode.Range(startPos, endPos);
